@@ -29,7 +29,15 @@ th {
 
 # {{ page.title }}
 
-## Objective
+## Intent Of This Document
+The intent of this document is to:
+
+1. Describe the design of a new ROS 2 packages called `ROS2-SecTest`. This package will gather code which can be used to "attack" ROS 2 applications.
+1. Explain the motivation behind proposing this new package and how this work is a follow-up on the ROS 2 threat model.
+
+We are contributing this document to the community to get buy-in from the community, raise visibility and hopefully create a single place for ROS 2 users to collaborate.
+
+## Objective of ROS2-SecTest
 
 We have previously published a document describing a [ROS 2 threat model][threat_model]. This threat model is composed of attacks which are, as of today, theoretical. To continue raising the bar on ROS 2 security, we propose to:
 
@@ -65,7 +73,7 @@ However, vulnerabilities unrelated to ROS 2 are not in scope:
 * Validating that the robot NTP server or kernel is up-to-date and is not vulnerable to attacks.
 
 
-The rationale is that there is any arbitrary software package may be bundled with a particular robot. Trying to evaluate all possible vulnerabilities can be done using a generic vulnerability scanner or framework. We should not try to re-invent generic tools already developed by the security community.
+The rationale is that any arbitrary software package may be bundled with a particular robot. Trying to evaluate all possible vulnerabilities can be done using a generic vulnerability scanner or framework. We should not try to re-invent generic tools already developed by the security community.
 
 On the opposite, we need to address ROS 2 specific concerns as limited efforts have been done to document and mitigate those issues.
 
@@ -97,7 +105,7 @@ As a consequence, we make the assumption that it is helpful to implement attacks
 An attack PoC is a ROS 2 node which, when launched, can disrupt the activity of a robot in any way, including: recording private information, preventing nodes from behaving correctly, corrupting information, etc.
 ![RunnerNode](/img/ros2_sectest/runner_node.png)
 
-Those ROS 2 nodes are loaded and run through the Runner class. This runner class is in charge of spinning (rclcpp::spin()) and is occupying the main thread.
+Those ROS 2 nodes are loaded and run through the Runner class. This runner class is in charge of spinning (`rclcpp::spin()`) and is occupying the main thread.
 
 #### Example: CPU attack & Mitigation
 
@@ -148,7 +156,7 @@ For obvious reasons, running the exploit through tests is dangerous. To ensure t
 
 ### Project Ownership & Governance
 
-As of today, we would like to ensure this project becomes a part of the ROS 2 code base / ros2 organization on GitHub. This is to ensure a high level of visibility to this project (and avoid duplication of efforts in the community).
+We would like to ensure this project becomes a part of the ROS 2 code base / ros2 organization on GitHub. This is to ensure a high level of visibility to this project (and avoid duplication of efforts in the community).
 
 ## Selected Attacks to be implemented
 
