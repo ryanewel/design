@@ -28,8 +28,36 @@ th {
 </style>
 
 # {{ page.title }}
+## Table of Contents
+- [{{ page.title }}](#pagetitle)
+  - [Table of Contents](#table-of-contents)
+  - [Intent of This Document](#intent-of-this-document)
+  - [Objective of ROS2-SecTest](#objective-of-ros2-sectest)
+  - [Vulnerability Evaluation Process](#vulnerability-evaluation-process)
+  - [Vulnerability Evaluation Process Scope](#vulnerability-evaluation-process-scope)
+    - [ROS 2 specific VS Generic Vulnerabilities](#ros-2-specific-vs-generic-vulnerabilities)
+    - [Local VS Remote vulnerabilities](#local-vs-remote-vulnerabilities)
+    - [Relationship to SROS](#relationship-to-sros)
+  - [How to implement and validate an attack](#how-to-implement-and-validate-an-attack)
+    - [Overview](#overview)
+    - [Example: CPU attack and Mitigation](#example-cpu-attack-and-mitigation)
+  - [ROS 2 Attack Framework Package Design Overview](#ros-2-attack-framework-package-design-overview)
+    - [Overview](#overview-1)
+    - [Architecture](#architecture)
+    - [Testing Plan](#testing-plan)
+    - [Project Ownership and Governance](#project-ownership-and-governance)
+  - [Selected Attacks to be implemented](#selected-attacks-to-be-implemented)
+  - [Examples of Attacks](#examples-of-attacks)
 
-## Objective
+## Intent Of This Document
+The intent of this document is to:
+
+1. Describe the design of a new ROS 2 packages called `ROS2-SecTest`. This package will gather code which can be used to "attack" ROS 2 applications.
+1. Explain the motivation behind proposing this new package and how this work is a follow-up on the ROS 2 threat model.
+
+We are contributing this document to the community to get buy-in from the community, raise visibility and hopefully create a single place for ROS 2 users to collaborate.
+
+## Objective of ROS2-SecTest
 
 We have previously published a document describing a [ROS 2 threat model][threat_model]. This threat model is composed of attacks which are, as of today, theoretical. To continue raising the bar on ROS 2 security, we propose to:
 
@@ -40,7 +68,7 @@ The order in which threats will be considered will be determined by the threat v
 
 ## Vulnerability Evaluation Process
 
-Assessing and mitigating a vulnerability is a 4-step process. Its output is an attack proof-of-concept, a mitigation and a report (see appendix).
+Assessing and mitigating a vulnerability is a 4-step process. Its output is an attack proof-of-concept, a mitigation and a report.
 
 1. **Attack PoC** - a proof of concept for the attack is implemented and contributed back to a Git repository listing all potential attacks.
 2. **Attack Validation** - the attack implemented in 1. is used to disrupt, take control or attack in any way a robot. The target platform is unimportant. For commodity reasons, we suggest to use TurtleBot3 as a reference platform for this step. Note: Not all attacks require validation on a robot. A conscious effort should be made during this step to avoid over-relying on any particular robot specific characteristic. If this is the case, those assumptions should be made explicit in the vulnerability report. This attack validation needs to be easily reproducible by the community, but does not need to be automated (i.e. it is OK to ask the user to check manually whether the robot is moving differently due to the attack for instance).
@@ -65,7 +93,7 @@ However, vulnerabilities unrelated to ROS 2 are not in scope:
 * Validating that the robot NTP server or kernel is up-to-date and is not vulnerable to attacks.
 
 
-The rationale is that there is any arbitrary software package may be bundled with a particular robot. Trying to evaluate all possible vulnerabilities can be done using a generic vulnerability scanner or framework. We should not try to re-invent generic tools already developed by the security community.
+The rationale is that any arbitrary software package may be bundled with a particular robot. Trying to evaluate all possible vulnerabilities can be done using a generic vulnerability scanner or framework. We should not try to re-invent generic tools already developed by the security community.
 
 On the opposite, we need to address ROS 2 specific concerns as limited efforts have been done to document and mitigate those issues.
 
@@ -97,9 +125,9 @@ As a consequence, we make the assumption that it is helpful to implement attacks
 An attack PoC is a ROS 2 node which, when launched, can disrupt the activity of a robot in any way, including: recording private information, preventing nodes from behaving correctly, corrupting information, etc.
 ![RunnerNode](/img/ros2_sectest/runner_node.png)
 
-Those ROS 2 nodes are loaded and run through the Runner class. This runner class is in charge of spinning (rclcpp::spin()) and is occupying the main thread.
+Those ROS 2 nodes are loaded and run through the Runner class. This runner class is in charge of spinning (`rclcpp::spin()`) and is occupying the main thread.
 
-#### Example: CPU attack & Mitigation
+#### Example: CPU attack and Mitigation
 
 For instance, a CPU abuse attack is a ROS 2 node creating one or more threads which consume an excessive amount of CPU.
 
@@ -146,9 +174,9 @@ The rationale is that we don't actually want to disrupt the robot more than nece
 
 For obvious reasons, running the exploit through tests is dangerous. To ensure that the code is working properly, a null / no-op attack will be implemented.
 
-### Project Ownership & Governance
+### Project Ownership and Governance
 
-As of today, we would like to ensure this project becomes a part of the ROS 2 code base / ros2 organization on GitHub. This is to ensure a high level of visibility to this project (and avoid duplication of efforts in the community).
+We would like to ensure this project becomes a part of the ROS 2 code base / ros2 organization on GitHub. This is to ensure a high level of visibility to this project (and avoid duplication of efforts in the community).
 
 ## Selected Attacks to be implemented
 
@@ -161,7 +189,7 @@ To start, we chose to implement three “easy” attacks:
 Those three attacks need to run on the robot (local attacks). They have been chosen because they are quick to implement and exhibit issues linked to the lack of sandboxing / isolation between ROS 2 nodes.
 
 
-## Example of Attacks
+## Examples of Attacks
 
 The threat model is the source of truth, but we could also build the following exploits easily:
 
